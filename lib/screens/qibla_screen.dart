@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:math' as math;
 
 class QiblaScreen extends StatefulWidget {
-  const QiblaScreen({Key? key}) : super(key: key);
+  const QiblaScreen({super.key});
 
   @override
   State<QiblaScreen> createState() => _QiblaScreenState();
@@ -25,6 +25,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
   Future<void> _checkLocationPermission() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Layanan lokasi tidak aktif')),
       );
@@ -35,6 +36,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Izin lokasi ditolak')),
         );
@@ -43,6 +45,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Izin lokasi ditolak permanen. Silakan aktifkan di pengaturan'),
@@ -74,10 +77,12 @@ class _QiblaScreenState extends State<QiblaScreen> {
       qibla = qibla * (180 / math.pi);
       qibla = (qibla + 360) % 360;
       
+      if (!mounted) return;
       setState(() {
         _qiblaDirection = qibla;
       });
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );

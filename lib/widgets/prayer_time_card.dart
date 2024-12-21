@@ -7,11 +7,11 @@ class PrayerTimeCard extends StatelessWidget {
   final ValueChanged<bool>? onNotificationChanged;
 
   const PrayerTimeCard({
-    Key? key,
+    super.key,
     required this.prayerTime,
     required this.onTap,
     this.onNotificationChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

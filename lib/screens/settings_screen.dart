@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../services/storage_service.dart';
+import '../services/notification_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final StorageService storageService;
+  final NotificationService notificationService;
 
   const SettingsScreen({
-    Key? key,
+    super.key,
     required this.storageService,
-  }) : super(key: key);
+    required this.notificationService,
+  });
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -18,7 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final List<String> adhanOptions = [
     'Makkah',
     'Madinah', 
-    'Al-Aqsa',
+    'Al-Alaqsa',
   ];
 
   @override
@@ -30,6 +33,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadSettings() async {
     selectedAdhan = widget.storageService.getAdhanSound() ?? adhanOptions[0];
     setState(() {});
+  }
+
+  void _testAdhan() async {
+    final now = DateTime.now().add(const Duration(seconds: 5));
+    await widget.notificationService.scheduleNotification(
+      id: 999,
+      title: 'Test Adzan',
+      body: 'Ini adalah test suara adzan',
+      scheduledTime: now,
+      sound: selectedAdhan?.toLowerCase() ?? 'adhan_makkah',
+    );
+    
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Notifikasi akan muncul dalam 5 detik')),
+    );
   }
 
   @override
@@ -56,6 +75,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   widget.storageService.saveAdhanSound(newValue!);
                 });
               },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: _testAdhan,
+              child: const Text('Test Suara Adzan'),
             ),
           ),
         ],

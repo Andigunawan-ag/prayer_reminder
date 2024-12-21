@@ -1,23 +1,19 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class NotificationService {
-  static final NotificationService _instance = NotificationService._internal();
-  factory NotificationService() => _instance;
-  NotificationService._internal();
-
-  final FlutterLocalNotificationsPlugin notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
-    AndroidInitializationSettings androidInitializationSettings =
-        const AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // Hapus pengaturan iOS karena tidak dibutuhkan untuk Android
-    InitializationSettings initializationSettings = InitializationSettings(
-      android: androidInitializationSettings,
+    tz.initializeTimeZones();
+    
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const settings = InitializationSettings(
+      android: androidSettings,
     );
 
-    await notificationsPlugin.initialize(initializationSettings);
+    await _notifications.initialize(settings);
   }
 
   Future<void> scheduleNotification({
@@ -25,25 +21,30 @@ class NotificationService {
     required String title,
     required String body,
     required DateTime scheduledTime,
+    String sound = 'adhan_makkah',
   }) async {
-    AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails(
-      'prayer_reminder',
+    final androidDetail = AndroidNotificationDetails(
+      'prayer_channel',
       'Prayer Times',
+      channelDescription: 'Notifications for prayer times',
       importance: Importance.max,
       priority: Priority.high,
+      sound: RawResourceAndroidNotificationSound(sound),
+      playSound: true,
     );
 
-    NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
+    final details = NotificationDetails(
+      android: androidDetail,
     );
 
-    await notificationsPlugin.schedule(
+    await _notifications.zonedSchedule(
       id,
       title,
       body,
-      scheduledTime,
-      notificationDetails,
+      tz.TZDateTime.from(scheduledTime, tz.local),
+      details,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }
