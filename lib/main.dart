@@ -22,10 +22,10 @@ class MyApp extends StatelessWidget {
   final NotificationService notificationService;
 
   const MyApp({
-    Key? key,
+    super.key,
     required this.storageService, 
     required this.notificationService,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

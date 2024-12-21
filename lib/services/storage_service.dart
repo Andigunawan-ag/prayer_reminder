@@ -1,23 +1,25 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:logger/logger.dart';
 
 class StorageService {
   final SharedPreferences _prefs;
+  final Logger _logger = Logger();
   
   StorageService(this._prefs);
 
   // Konstanta untuk key penyimpanan
-  static const String NOTIFICATION_KEY = 'prayer_notifications';
-  static const String ADHAN_SOUND_KEY = 'adhan_sound';
-  static const String PRAYER_TIMES_KEY = 'prayer_times';
+  static const String notificationKey = 'prayer_notifications';
+  static const String adhanSoundKey = 'adhan_sound';
+  static const String prayerTimesKey = 'prayer_times';
 
   // Menyimpan pengaturan notifikasi
   Future<bool> saveNotificationSettings(Map<String, bool> settings) async {
     try {
       final String jsonString = json.encode(settings);
-      return await _prefs.setString(NOTIFICATION_KEY, jsonString);
+      return await _prefs.setString(notificationKey, jsonString);
     } catch (e) {
-      print('Error saving notification settings: $e');
+      _logger.e('Error saving notification settings: $e');
       return false;
     }
   }
@@ -25,13 +27,13 @@ class StorageService {
   // Mengambil pengaturan notifikasi
   Map<String, bool> getNotificationSettings() {
     try {
-      final String? jsonString = _prefs.getString(NOTIFICATION_KEY);
+      final String? jsonString = _prefs.getString(notificationKey);
       if (jsonString != null) {
         return Map<String, bool>.from(json.decode(jsonString));
       }
       return {};
     } catch (e) {
-      print('Error getting notification settings: $e');
+      _logger.e('Error getting notification settings: $e');
       return {};
     }
   }
@@ -39,9 +41,9 @@ class StorageService {
   // Menyimpan pengaturan suara adzan
   Future<bool> saveAdhanSound(String soundPath) async {
     try {
-      return await _prefs.setString(ADHAN_SOUND_KEY, soundPath);
+      return await _prefs.setString(adhanSoundKey, soundPath);
     } catch (e) {
-      print('Error saving adhan sound: $e');
+      _logger.e('Error saving adhan sound: $e');
       return false;
     }
   }
@@ -49,9 +51,9 @@ class StorageService {
   // Mengambil pengaturan suara adzan
   String? getAdhanSound() {
     try {
-      return _prefs.getString(ADHAN_SOUND_KEY);
+      return _prefs.getString(adhanSoundKey);
     } catch (e) {
-      print('Error getting adhan sound: $e');
+      _logger.e('Error getting adhan sound: $e');
       return null;
     }
   }
@@ -60,9 +62,9 @@ class StorageService {
   Future<bool> savePrayerTimes(Map<String, String> prayerTimes) async {
     try {
       final String jsonString = json.encode(prayerTimes);
-      return await _prefs.setString(PRAYER_TIMES_KEY, jsonString);
+      return await _prefs.setString(prayerTimesKey, jsonString);
     } catch (e) {
-      print('Error saving prayer times: $e');
+      _logger.e('Error saving prayer times: $e');
       return false;
     }
   }
@@ -70,13 +72,13 @@ class StorageService {
   // Mengambil waktu sholat
   Map<String, String> getPrayerTimes() {
     try {
-      final String? jsonString = _prefs.getString(PRAYER_TIMES_KEY);
+      final String? jsonString = _prefs.getString(prayerTimesKey);
       if (jsonString != null) {
         return Map<String, String>.from(json.decode(jsonString));
       }
       return {};
     } catch (e) {
-      print('Error getting prayer times: $e');
+      _logger.e('Error getting prayer times: $e');
       return {};
     }
   }
@@ -86,7 +88,7 @@ class StorageService {
     try {
       return await _prefs.clear();
     } catch (e) {
-      print('Error clearing storage: $e');
+      _logger.e('Error clearing storage: $e');
       return false;
     }
   }

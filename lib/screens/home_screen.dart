@@ -12,10 +12,10 @@ class HomeScreen extends StatefulWidget {
   final NotificationService notificationService;
 
   const HomeScreen({
-    Key? key,
+    super.key,
     required this.storageService,
     required this.notificationService,
-  }) : super(key: key);
+  });
 
   @override
   State<HomeScreen> createState() => _HomePageState();
@@ -87,6 +87,7 @@ class _HomePageState extends State<HomeScreen> {
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen(
                     storageService: widget.storageService,
+                    notificationService: widget.notificationService,
                   ),
                 ),
               );
