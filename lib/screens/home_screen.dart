@@ -6,6 +6,8 @@ import '../utils/constants.dart';
 import '../widgets/prayer_time_card.dart';
 import '../screens/qibla_screen.dart';
 import '../screens/settings_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   final StorageService storageService;
@@ -23,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomePageState extends State<HomeScreen> {
   List<PrayerTime> prayerTimes = Constants.defaultPrayerTimes;
+  String _location = '';
 
   void _setPrayerReminder(PrayerTime prayerTime) {
     if (!prayerTime.isNotificationEnabled) return;
@@ -51,6 +54,7 @@ class _HomePageState extends State<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Pengingat untuk sholat ${prayerTime.name} telah diatur'),
+        backgroundColor: Colors.green,
       ),
     );
   }
@@ -60,6 +64,19 @@ class _HomePageState extends State<HomeScreen> {
       prayerTimes[index] = prayerTimes[index].copyWith(
         isNotificationEnabled: value,
       );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _location = '${position.latitude}, ${position.longitude}';
     });
   }
 
@@ -105,6 +122,16 @@ class _HomePageState extends State<HomeScreen> {
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.green,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              ' ${DateFormat('dd-MM-yyyy').format(DateTime.now())},  ${DateFormat('HH:mm:ss').format(DateTime.now())}, ${_location}',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
               ),
             ),
           ),
