@@ -4,13 +4,22 @@ import 'screens/home_screen.dart';
 import 'services/storage_service.dart';
 import 'services/notification_service.dart';
 
+
 void main() async {
+  // Pastikan inisialisasi widget dan setup lainnya berjalan dengan benar
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inisialisasi SharedPreferences
   final prefs = await SharedPreferences.getInstance();
+  
+  // Inisialisasi layanan penyimpanan dan layanan notifikasi
   final storageService = StorageService(prefs);
   final notificationService = NotificationService();
+  
+  // Inisialisasi notifikasi
   await notificationService.initNotification();
 
+  // Menjalankan aplikasi
   runApp(MyApp(
     storageService: storageService,
     notificationService: notificationService,
