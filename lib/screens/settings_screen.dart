@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           ListTile(
-            title: const Text('Pilih Suara Adzan'),
+            title: const Text('Pilih Suara Adzan Yang Anda Ingin'),
             trailing: DropdownButton<String>(
               value: selectedAdhan,
               items: adhanOptions.map((String value) {
