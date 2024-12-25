@@ -53,7 +53,7 @@ class StorageService {
     try {
       return _prefs.getString(adhanSoundKey);
     } catch (e) {
-      _logger.e('Error getting adhan sound: $e');
+      _logger.e('Error getting adzan sound: $e');
       return null;
     }
   }

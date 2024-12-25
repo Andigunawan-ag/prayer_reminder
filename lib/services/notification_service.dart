@@ -21,7 +21,7 @@ class NotificationService {
     required String title,
     required String body,
     required DateTime scheduledTime,
-    String sound = 'adhan_makkah',
+    String sound = 'adzan_makkah',
   }) async {
     final androidDetail = AndroidNotificationDetails(
       'prayer_channel',
