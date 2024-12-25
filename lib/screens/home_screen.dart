@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
 import '../models/prayer_time.dart';
@@ -6,6 +7,7 @@ import '../utils/constants.dart';
 import '../widgets/prayer_time_card.dart';
 import '../screens/qibla_screen.dart';
 import '../screens/settings_screen.dart';
+import '../services/audio_service.dart'; // Pastikan AudioService diimpor
 
 class HomeScreen extends StatefulWidget {
   final StorageService storageService;
@@ -14,7 +16,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.storageService,
-    required this.notificationService,
+    required this.notificationService, required AudioPlayer audioPlayer,
   });
 
   @override
@@ -24,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomePageState extends State<HomeScreen> {
   List<PrayerTime> prayerTimes = Constants.defaultPrayerTimes;
 
+  // Fungsi untuk mengatur pengingat dan memutar audio berdasarkan waktu sholat
   void _setPrayerReminder(PrayerTime prayerTime) {
     if (!prayerTime.isNotificationEnabled) return;
 
@@ -38,9 +41,10 @@ class _HomePageState extends State<HomeScreen> {
     );
 
     if (scheduleTime.isBefore(now)) {
-      scheduleTime.add(const Duration(days: 1));
+      scheduleTime.add(const Duration(days: 1)); // Jika waktu sholat sudah lewat, set besok
     }
 
+    // Mengatur notifikasi pengingat sholat
     widget.notificationService.scheduleNotification(
       id: prayerTimes.indexOf(prayerTime),
       title: 'Waktu Sholat ${prayerTime.name}',
@@ -48,19 +52,40 @@ class _HomePageState extends State<HomeScreen> {
       scheduledTime: scheduleTime,
     );
 
+    // Menampilkan snack bar bahwa pengingat telah diset
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Pengingat untuk sholat ${prayerTime.name} telah diatur'),
       ),
     );
+
+    // Memilih audio yang akan diputar berdasarkan waktu sholat
+    String audioPath = _getAdzanAudioForPrayer(prayerTime.name);
+
+    // Menggunakan AudioService untuk memutar audio
+    AudioService().playAdhan(audioPath).then((_) {
+      print('Audio berhasil diputar');
+    }).catchError((error) {
+      print('Gagal memutar audio: $error');
+    });
   }
 
-  void _toggleNotification(int index, bool value) {
-    setState(() {
-      prayerTimes[index] = prayerTimes[index].copyWith(
-        isNotificationEnabled: value,
-      );
-    });
+  // Fungsi untuk menentukan file audio berdasarkan nama waktu sholat
+  String _getAdzanAudioForPrayer(String prayerName) {
+    switch (prayerName.toLowerCase()) {
+      case 'subuh':
+        return 'adzan_makkah'; // Adzan Makkah untuk Subuh
+      case 'dzuhur':
+        return 'adzan_madinah'; // Adzan Madinah untuk Dzuhur
+      case 'asar':
+        return 'adzan_alaqsa'; // Adzan Al-Aqsa untuk Asar
+      case 'maghrib':
+        return 'adzan_makkah'; // Adzan Makkah untuk Maghrib
+      case 'isya':
+        return 'adzan_madinah'; // Adzan Madinah untuk Isya
+      default:
+        return 'adzan_makkah'; // Default ke Adzan Makkah
+    }
   }
 
   @override
@@ -115,7 +140,6 @@ class _HomePageState extends State<HomeScreen> {
                 return PrayerTimeCard(
                   prayerTime: prayerTimes[index],
                   onTap: () => _setPrayerReminder(prayerTimes[index]),
-                  onNotificationChanged: (value) => _toggleNotification(index, value),
                 );
               },
             ),

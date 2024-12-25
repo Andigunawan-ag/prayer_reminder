@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
+import '../services/audio_service.dart'; // Pastikan AudioService diimpor
 
 class SettingsScreen extends StatefulWidget {
   final StorageService storageService;
@@ -19,9 +20,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   String? selectedAdhan;
   final List<String> adhanOptions = [
-    'Makkah',
-    'Madinah', 
-    'Al-Alaqsa',
+    'Makkah', 'Madinah', 'Al-Alaqsa', // Suara adzan yang tersedia
   ];
 
   @override
@@ -30,25 +29,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadSettings();
   }
 
+  // Memuat suara Adzan yang dipilih dari penyimpanan
   Future<void> _loadSettings() async {
     selectedAdhan = widget.storageService.getAdhanSound() ?? adhanOptions[0];
     setState(() {});
   }
 
-  void _testAdhan() async {
-    final now = DateTime.now().add(const Duration(seconds: 5));
-    await widget.notificationService.scheduleNotification(
-      id: 999,
-      title: 'Test Adzan',
-      body: 'Ini adalah test suara adzan',
-      scheduledTime: now,
-      sound: selectedAdhan?.toLowerCase() ?? 'adhan_makkah',
-    );
-    
-    if (!mounted) return;
+  // Fungsi untuk menyimpan suara yang dipilih
+  void _saveAdhan() {
+    widget.storageService.saveAdhanSound(selectedAdhan!);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Notifikasi akan muncul dalam 5 detik')),
+      SnackBar(content: Text('Suara adzan disimpan: $selectedAdhan')),
     );
+  }
+
+  // Fungsi untuk memutar suara Adzan
+  void _testAdhan() {
+    print("Tombol Test Suara Adzan ditekan");
+
+    String audioPath;
+    switch (selectedAdhan) {
+      case 'Makkah':
+        audioPath = 'adzan_makkah'; // Sesuaikan dengan nama file audio
+        break;
+      case 'Madinah':
+        audioPath = 'adzan_madinah';
+        break;
+      case 'Al-Alaqsa':
+        audioPath = 'adzan_alaqsa';
+        break;
+      default:
+        audioPath = 'adzan_makkah';
+    }
+
+    // Memutar audio dengan menggunakan AudioService
+    AudioService().playAdhan(audioPath).then((_) {
+      print('Audio berhasil diputar');
+    }).catchError((error) {
+      print('Gagal memutar audio: $error');
+    });
   }
 
   @override
@@ -72,11 +91,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (String? newValue) {
                 setState(() {
                   selectedAdhan = newValue;
-                  widget.storageService.saveAdhanSound(newValue!);
                 });
+                _saveAdhan(); // Simpan suara yang dipilih
               },
             ),
           ),
+          // Tombol untuk menguji suara Adzan
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(

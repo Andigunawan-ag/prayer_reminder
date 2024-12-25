@@ -23,9 +23,11 @@ void main() {
     await notificationService.initNotification();
 
     // Build our app and trigger a frame.
+    var audioPlayer;
     await tester.pumpWidget(MyApp(
       storageService: storageService,
       notificationService: notificationService,
+      audioPlayer: audioPlayer,
     ));
 
     // Perbarui test sesuai dengan fitur aplikasi yang sebenarnya
