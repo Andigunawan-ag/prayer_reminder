@@ -59,14 +59,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
         audioPath = 'adzan_alaqsa';
         break;
       default:
-        audioPath = 'adzan_makkah';
+        audioPath = 'adzan_alaqsa';
     }
 
-    // Memutar audio dengan menggunakan AudioService
-    AudioService().playAdhan(audioPath).then((_) {
-      print('Audio berhasil diputar');
+    // Pertama, hentikan audio yang sedang diputar (jika ada)
+    AudioService().stopAdhan().then((_) {
+      print('Audio berhasil dihentikan');
+      // Memutar audio dengan menggunakan AudioService
+      AudioService().playAdhan(audioPath).then((_) {
+        print('Audio berhasil diputar');
+      }).catchError((error) {
+        print('Gagal memutar audio: $error');
+      });
     }).catchError((error) {
-      print('Gagal memutar audio: $error');
+      print('Gagal menghentikan audio: $error');
+    });
+  }
+
+  // Fungsi untuk menghentikan audio adzan
+  void _stopAdhan() {
+    AudioService().stopAdhan().then((_) {
+      print('Audio berhenti');
+    }).catchError((error) {
+      print('Gagal menghentikan audio: $error');
     });
   }
 
@@ -102,6 +117,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ElevatedButton(
               onPressed: _testAdhan,
               child: const Text('Test Suara Adzan'),
+            ),
+          ),
+          // Tombol untuk menghentikan suara Adzan
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: _stopAdhan,
+              child: const Text('Berhenti Suara Adzan'),
             ),
           ),
         ],
