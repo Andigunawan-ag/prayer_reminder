@@ -29,7 +29,7 @@ class Constants {
     ),
     PrayerTime(
       name: 'Isya',
-      time: '19:45',
+      time: '22:29',
       icon: Icons.nightlight_round,
       iconColor: Colors.blue,
     ),
