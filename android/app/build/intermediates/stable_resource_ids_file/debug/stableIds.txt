@@ -1,0 +1,5 @@
+com.example.prayer_reminder:style/NormalTheme = 0x7f040001
+com.example.prayer_reminder:style/LaunchTheme = 0x7f040000
+com.example.prayer_reminder:raw/adhan_makkah = 0x7f030000
+com.example.prayer_reminder:mipmap/ic_launcher = 0x7f020000
+com.example.prayer_reminder:drawable/launch_background = 0x7f010000

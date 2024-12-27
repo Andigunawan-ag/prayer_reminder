@@ -37,7 +37,7 @@ class _HomePageState extends State<HomeScreen> {
 
   // Fungsi untuk memperbarui waktu setiap detik
   void _startClock() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _currentTime = _formatTime(DateTime.now());
       });
@@ -146,7 +146,7 @@ class _HomePageState extends State<HomeScreen> {
         ],
       ),
       body: Container(  // Mengubah latar belakang konten utama
-        color: Color.fromARGB(255, 79, 122, 214), // Warna latar belakang konten
+        color: const Color.fromARGB(255, 79, 122, 214), // Warna latar belakang konten
         child: SingleChildScrollView( 
           child: Column(
             children: [
