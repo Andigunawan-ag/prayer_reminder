@@ -51,6 +51,7 @@ flutter:
     - assets/audio/adzan_makkah.mp3
     - assets/audio/adzan_alaqsa.mp3
     - assets/audio/adzan_madinah.mp3
+    - assets/image/masjid2.jpeg
 
   # Uncomment this section to include custom fonts
   # fonts:
