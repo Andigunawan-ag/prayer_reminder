@@ -11,8 +11,8 @@ class QiblaScreen extends StatefulWidget {
 }
 
 class _QiblaScreenState extends State<QiblaScreen> {
-  double? _direction;
-  double? _qiblaDirection;
+  double? _direction; // Arah kompas
+  double? _qiblaDirection; // Arah kiblat lokal
   bool _hasPermission = false;
 
   @override
@@ -22,6 +22,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     _initCompass();
   }
 
+  // Memeriksa izin lokasi
   Future<void> _checkLocationPermission() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -60,23 +61,26 @@ class _QiblaScreenState extends State<QiblaScreen> {
     _calculateQiblaDirection();
   }
 
+  // Menghitung arah Kiblat berdasarkan lokasi pengguna secara lokal
   Future<void> _calculateQiblaDirection() async {
     try {
       Position position = await Geolocator.getCurrentPosition();
-      
-      // Koordinat Ka'bah
+
+      // Koordinat Ka'bah (Mekah)
       const kaabahLat = 21.422487;
       const kaabahLng = 39.826206;
-      
-      // Hitung arah kiblat
+
+      // Menghitung arah kiblat menggunakan rumus matematika
       double deltaL = kaabahLng - position.longitude;
       double y = math.sin(deltaL);
-      double x = math.cos(position.latitude) * math.tan(kaabahLat) -
-          math.sin(position.latitude) * math.cos(deltaL);
+      double x = math.cos(position.latitude) * math.tan(kaabahLat) - math.sin(position.latitude) * math.cos(deltaL);
       double qibla = math.atan2(y, x);
-      qibla = qibla * (180 / math.pi);
-      qibla = (qibla + 360) % 360;
-      
+      qibla = qibla * (180 / math.pi); // Mengkonversi ke derajat
+      qibla = (qibla + 360) % 360; // Menjaga hasil antara 0 dan 360 derajat
+
+      print('Posisi Anda: lat=${position.latitude}, lng=${position.longitude}');
+      print('Arah Kiblat: $qibla');
+
       if (!mounted) return;
       setState(() {
         _qiblaDirection = qibla;
@@ -89,6 +93,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     }
   }
 
+  // Menginisialisasi kompas untuk mendapatkan arah kompas
   void _initCompass() {
     FlutterCompass.events?.listen((event) {
       setState(() {
@@ -118,6 +123,9 @@ class _QiblaScreenState extends State<QiblaScreen> {
     }
 
     double rotation = _direction! - _qiblaDirection!;
+    if (rotation < 0) {
+      rotation += 360;  // Menjaga rotasi tetap dalam rentang 0-360 derajat
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -135,7 +143,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
             child: Transform.rotate(
               angle: (rotation * (math.pi / 180) * -1),
               child: Image.asset(
-                'assets/images/compass.png',
+                'assets/images/compass.png',  // Pastikan Anda memiliki gambar kompas di folder assets/images
                 width: 200,
                 height: 200,
               ),
