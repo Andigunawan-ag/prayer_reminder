@@ -25,17 +25,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^9.1.5
-  intl: ^0.17.0
+  flutter_local_notifications:  ^18.0.1
+  intl: ^0.20.1 # perbarui ke versi yang kompatibel
   shared_preferences: ^2.0.15
-  geolocator: ^9.0.0
-  http: ^0.13.5
-  logger: ^1.0.0
-  flutter_compass: ^0.7.0
-  sensors_plus: ^1.3.4
-  audioplayers: ^5.2.1
-  flutter_sound: ^9.0.6
-  timezone: ^0.8.0
+  geolocator: ^13.0.2 # perbarui ke versi yang kompatibel
+  http: ^1.2.2 # perbarui ke versi yang kompatibel
+  logger: ^2.5.0 # perbarui ke versi yang kompatibel
+  flutter_compass: ^0.8.0
+  sensors_plus: ^6.1.1 # perbarui ke versi yang kompatibel
+  audioplayers: ^6.1.0 # Perbarui ke versi yang kompatibel
+  #flutter_sound: ^9.17.8 # Sesuaikan dengan versi terbaru dan kompatibel dengan minSdkVersion
+  timezone: ^0.10.0 # Perbarui ke versi yang kompatibel
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
