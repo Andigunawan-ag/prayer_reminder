@@ -1,0 +1,21 @@
+{
+  "name": "adhan-api",
+  "version": "1.0.0",
+  "description": "API untuk mengelola adzan dan waktu sholat",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "scripts": {
+    "test": "echo \"Tidak ada tes yang ditentukan\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "adzan",
+    "waktu sholat",
+    "api"
+  ],
+  "author": "Nama Anda",
+  "license": "ISC"
+}

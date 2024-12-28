@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
+import '../services/audio_service.dart';
+import '../services/adhan_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final StorageService storageService;
@@ -23,6 +25,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'Madinah', 
     'Al-Alaqsa',
   ];
+  final AudioService _audioService = AudioService();
+  final AdhanService _adhanService = AdhanService();
 
   @override
   void initState() {
@@ -36,19 +40,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _testAdhan() async {
-    final now = DateTime.now().add(const Duration(seconds: 5));
-    await widget.notificationService.scheduleNotification(
-      id: 999,
-      title: 'Test Adzan',
-      body: 'Ini adalah test suara adzan',
-      scheduledTime: now,
-      sound: selectedAdhan?.toLowerCase() ?? 'adhan_makkah',
-    );
-    
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Notifikasi akan muncul dalam 5 detik')),
-    );
+    try {
+      final url = await _adhanService.fetchAdhanUrl();
+      if (url != null) {
+        await _audioService.playAdhanFromUrl(url);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   @override
