@@ -36,15 +36,14 @@ class NotificationService {
     final details = NotificationDetails(
       android: androidDetail,
     );
-
     await _notifications.zonedSchedule(
       id,
       title,
       body,
       tz.TZDateTime.from(scheduledTime, tz.local),
       details,
-      androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exact,
     );
   }
 }

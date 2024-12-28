@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_compass/flutter_compass.dart';
+//import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:math' as math;
 
@@ -19,7 +19,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
   void initState() {
     super.initState();
     _checkLocationPermission();
-    _initCompass();
+    // _initCompass(); // Kode ini telah dimatikan
   }
 
   Future<void> _checkLocationPermission() async {
@@ -89,15 +89,15 @@ class _QiblaScreenState extends State<QiblaScreen> {
     }
   }
 
-  void _initCompass() {
-    FlutterCompass.events?.listen((event) {
-      setState(() {
-        _direction = event.heading;
-      });
-    });
-  }
+  // void _initCompass() {
+  //   FlutterCompass.events?.listen((event) {
+  //     setState(() {
+  //       _direction = event.heading;
+  //     });
+  //   });
+  // } // Kode ini telah dimatikan
 
-  @override
+@override
   Widget build(BuildContext context) {
     if (!_hasPermission) {
       return Scaffold(
