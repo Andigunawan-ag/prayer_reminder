@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.prayer_reminder"
+    namespace = "com.exale.prayer_reminder"
     compileSdkVersion 34
     ndkVersion = flutter.ndkVersion
 
