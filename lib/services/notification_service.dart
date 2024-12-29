@@ -43,7 +43,7 @@ class NotificationService {
       body,
       tz.TZDateTime.from(scheduledTime, tz.local),
       details,
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exact,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
